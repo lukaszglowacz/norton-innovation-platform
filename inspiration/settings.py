@@ -30,10 +30,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '8000-lukaszglowacz-norton-inn-lqqo8iwir1.us2.codeanyapp.com',
-    'norton-innovation-platform-edc4daea9f06.herokuapp.com/',
-    'localhost']
+ALLOWED_HOSTS = ['norton-innovation-platform-edc4daea9f06.herokuapp.com',
+                 '8000-lukaszglowacz-norton-inn-lqqo8iwir1.us2.codeanyapp.com', 'localhost']
 
 
 # Application definition
