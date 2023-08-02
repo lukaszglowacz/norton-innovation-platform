@@ -32,7 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '8000-lukaszglowacz-norton-inn-lqqo8iwir1.us2.codeanyapp.com',
-    'norton-innovation-platform.herokuapp.com',
+    'norton-innovation-platform-edc4daea9f06.herokuapp.com/',
     'localhost']
 
 
