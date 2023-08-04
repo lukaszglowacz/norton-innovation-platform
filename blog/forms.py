@@ -12,8 +12,8 @@ class CommentForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'author', 'content',
-                  'featured_image', 'excerpt', 'status']
+        fields = ['title', 'content',
+                  'featured_image', 'excerpt',]
 
     def clean_title(self):
         title = self.cleaned_data.get('title')

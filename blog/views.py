@@ -4,6 +4,12 @@ from django.http import HttpResponseRedirect
 from .models import Post
 from .forms import CommentForm, PostForm
 from django.contrib import messages
+from django.views.generic import DetailView
+from django.views.generic.edit import UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
+from django.utils.text import slugify
+
 
 
 class PostList(generic.ListView):
@@ -93,7 +99,33 @@ class PostCreate(View):
             post = form.save(commit=False)
             post.author = request.user
             post.slug = form.cleaned_data['slug']
+            post.status = 1
             post.save()
             return HttpResponseRedirect(reverse('index'))
         else:
             return render(request, "post_create.html", {"form": form})
+
+
+class PostEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    fields = ['title', 'content', 'featured_image', 'excerpt']
+    template_name = 'post_edit.html'
+    success_url = reverse_lazy('index')
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.author == self.request.user
+
+    def form_valid(self, form):
+        form.instance.slug = slugify(form.instance.title)
+        return super().form_valid(form)
+
+
+class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'post_delete.html'
+    success_url = reverse_lazy('index')
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.author == self.request.user

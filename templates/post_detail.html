@@ -8,7 +8,12 @@
         <h1 class="post-title">{{ post.title }}</h1>
         <!-- Post author goes before the | the post's created date goes after -->
         <p class="post-subtitle">{{ post.author }} | {{ post.created_on }}</p>
+        {% if user.is_authenticated and user == post.author %}
+        <a href="{% url 'post_edit' post.pk %}">Edit</a>
+        <a href="{% url 'post_delete' post.pk %}">Delete</a>
+        {% endif %}
       </div>
+
       <div class="d-none d-md-block col-md-6 masthead-image">
         <!-- The featured image URL goes in the src attribute -->
         {% if "placeholder" in post.featured_image.url %}
@@ -54,7 +59,7 @@
                 {% else %}
 
                 <button
-                  type="sumbit"
+                  type="submit"
                   name="blogpost_id"
                   value="{{post.slug}}"
                   class="btn-like"
@@ -71,6 +76,7 @@
               <span class="text-secondary">{{ post.number_of_likes }}</span>
             </strong>
           </div>
+
           <div class="col-1">
             {% with comments.count as total_comments %}
             <strong class="text-secondary"
