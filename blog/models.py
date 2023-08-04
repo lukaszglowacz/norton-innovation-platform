@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
+from django import forms
+from django.utils.text import slugify
 
 STATUS = ((0, "Draft"), (1, "Published"))
 
@@ -42,3 +44,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment {self.body} by {self.name}"
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('body',)
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ('title', 'slug', 'author', 'content',
+                  'featured_image', 'excerpt', 'status',)
