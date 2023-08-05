@@ -6,7 +6,7 @@ from django.utils.text import slugify
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ('body',)
+        fields = ('body', 'image')
 
 
 class PostForm(forms.ModelForm):

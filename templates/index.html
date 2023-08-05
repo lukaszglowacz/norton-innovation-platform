@@ -46,15 +46,23 @@
     <ul class="pagination justify-content-center">
       {% if page_obj.has_previous %}
       <li>
-        <a href="?page={{ page_obj.previous_page_number }}" class="page-link"
-          >&lt; PREV</a
+        <button
+          id="prevBtn"
+          class="btn btn-signup btn-lg"
+          data-href="?page={{ page_obj.previous_page_number }}"
         >
+          <i class="fa-solid fa-backward"></i> PREV
+        </button>
       </li>
       {% endif %} {% if page_obj.has_next %}
       <li>
-        <a href="?page={{ page_obj.next_page_number }}" class="page-link"
-          >NEXT &gt;</a
+        <button
+          id="nextBtn"
+          class="btn btn-signup btn-lg"
+          data-href="?page={{ page_obj.next_page_number }}"
         >
+          NEXT <i class="fa-solid fa-forward"></i>
+        </button>
       </li>
       {% endif %}
     </ul>

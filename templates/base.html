@@ -126,6 +126,18 @@
             let alert = new bootstrap.Alert(messages);
             alert.close();
         }, 3000);
+
+        document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('nextBtn').addEventListener('click', function () {
+                    window.location.href = this.getAttribute('data-href');
+                });
+            });
+
+        document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('prevBtn').addEventListener('click', function () {
+                    window.location.href = this.getAttribute('data-href');
+                });
+            });
     </script>
   </body>
 </html>
