@@ -7,6 +7,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('body', 'image')
+        widgets = {
+            'image': forms.FileInput(attrs={'class': 'btn, btn-sm'}),
+        }
 
 
 class PostForm(forms.ModelForm):
@@ -16,7 +19,7 @@ class PostForm(forms.ModelForm):
                   'featured_image', 'excerpt',]
 
     def clean_title(self):
-        title = self.cleaned_data.get('title')
+        title = self.cleaned_data.get('title').capitalize()
         slug = slugify(title)
 
         unique_slug = slug

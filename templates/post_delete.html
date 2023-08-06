@@ -1,9 +1,25 @@
-{% extends 'base.html' %} {% block content %}
-<h3>Delete Post</h3>
-<p>Are you sure you want to delete the post "{{ object.title }}"?</p>
-<form method="post">
-  {% csrf_token %}
-  <button type="submit">Yes, delete</button>
-</form>
-<a href="{% url 'post_detail' object.pk %}">No, take me back</a>
+{% extends 'base.html' %}{% load crispy_forms_tags %}{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 mt-3 offset-md-2">
+      <h3>Delete Your Inspiration</h3>
+      <p>Are you sure you want to delete the post "{{ object.title }}"?</p>
+    </div>
+  </div>
+  <div class="row">
+    <form method="POST" class="col-12">
+      {% csrf_token %} {{ form|crispy }}
+      <div class="col-md-8 mt-3 offset-md-2">
+        <button type="submit" class="btn btn-danger btn-lg mt-1 mr-2">
+          Yes
+        </button>
+        <a href="{% url 'home' %}" class="btn btn-success btn-lg mt-1 ml-2">
+          No
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
 {% endblock %}

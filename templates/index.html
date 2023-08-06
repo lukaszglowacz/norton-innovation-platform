@@ -1,9 +1,13 @@
 {% extends "base.html" %} {% block content %}
 
-<div class="container-fluid">
+<div class="container">
+  {% if user.is_authenticated %}
   <div class="row">
-    <a href="{% url 'post_create' %}" class="btn btn-primary">Create Post</a>
+    <a href="{% url 'post_create' %}" class="btn btn-lg btn-signup rounded-0"
+      >Create Your Inspiration</a
+    >
   </div>
+  {% endif %}
   <div class="row">
     <!-- Blog Entries Column -->
     <div class="col-12 mt-3 center">
@@ -30,8 +34,11 @@
                 <p class="card-text">{{ post.excerpt }}</p>
               </a>
               <p class="card-text text-muted h6">
-                {{ post.created_on }}<i class="far fa-heart"></i
-                >{{post.number_of_likes }}
+                {{ post.created_on }}
+                <span class="ms-1"
+                  ><i class="far fa-heart"></i
+                  ><span> {{post.number_of_likes }} </span></span
+                >
               </p>
             </div>
           </div>
@@ -51,7 +58,7 @@
           class="btn btn-signup btn-lg"
           data-href="?page={{ page_obj.previous_page_number }}"
         >
-          <i class="fa-solid fa-backward"></i> PREV
+          <i class="fas fa-chevron-left"></i> PREV
         </button>
       </li>
       {% endif %} {% if page_obj.has_next %}
@@ -61,7 +68,7 @@
           class="btn btn-signup btn-lg"
           data-href="?page={{ page_obj.next_page_number }}"
         >
-          NEXT <i class="fa-solid fa-forward"></i>
+          NEXT <i class="fas fa-chevron-right"></i>
         </button>
       </li>
       {% endif %}
