@@ -8,7 +8,13 @@ from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.utils.text import slugify
+from django.utils.text import slugify, capfirst
+from django import forms
+from django.forms.widgets import Textarea
+from django.core.validators import MaxLengthValidator
+from PIL import Image
+from django.core.files.base import ContentFile
+import io
 
 
 
@@ -88,17 +94,75 @@ class PostLike(View):
         return HttpResponseRedirect(reverse('post_detail', args=[slug]))
 
 
+class PostCreateForm(forms.ModelForm):
+    title = forms.CharField(
+        max_length=50,
+        error_messages={
+            'max_length': "Title can't be longer than 50 characters"
+        },
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Enter your title here'}
+        )
+    )
+    excerpt = forms.CharField(
+        max_length=100,
+        error_messages={
+            'max_length': "Excerpt can't be longer than 100 characters"
+        },
+        widget=forms.Textarea(
+            attrs={'rows': 2, 'cols': 40,
+                   'placeholder': 'Enter your short title here'}
+        )
+    )
+
+    class Meta:
+        model = Post
+        fields = ['title', 'excerpt', 'content', 'featured_image']
+        labels = {
+            'featured_image': 'Upload image'
+        }
+        widgets = {
+            'content': forms.Textarea(
+                attrs={'rows': 6, 'cols': 40, 'placeholder': "Share your inspiration for this wall! Whether it's a bold geometric pattern or a calming landscape, tell us what motivates your design"}
+            ),
+        }
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        return capfirst(title)
+
+    def __init__(self, *args, **kwargs):
+        super(PostCreateForm, self).__init__(*args, **kwargs)
+        self.fields['excerpt'].label = "Short Title"
+
+    def clean_featured_image(self):
+        image = self.cleaned_data.get('featured_image', False)
+        if image:
+            img = Image.open(image)
+            max_size = (800, 800)  # Max size (width, height)
+            img.thumbnail(max_size, Image.LANCZOS)
+            img_io = io.BytesIO()
+            img_format = img.format if img.format else 'JPEG'  # Corrected indentation
+            img.save(img_io, format=img_format, quality=60)
+            img_io.seek(0)  # Reset file pointer to the beginning
+            image.name = 'resized_' + image.name  # Change the image filename
+            # Create a new Django file-like object
+            image.file = img_io
+        return image
+
+
 class PostCreate(View):
     def get(self, request):
-        form = PostForm()
+        form = PostCreateForm()  # Using the new form class
         return render(request, "post_create.html", {"form": form})
 
     def post(self, request):
-        form = PostForm(request.POST, request.FILES)
+        # Using the new form class
+        form = PostCreateForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            post.slug = form.cleaned_data['slug']
+            post.slug = slugify(form.cleaned_data['title'])
             post.status = 1
             post.save()
             return HttpResponseRedirect(reverse('index'))
@@ -106,9 +170,72 @@ class PostCreate(View):
             return render(request, "post_create.html", {"form": form})
 
 
+class PostEditForm(forms.ModelForm):
+    title = forms.CharField(
+        max_length=50,
+        error_messages={
+            'max_length': "Title can't be longer than 50 characters"
+        },
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Enter your title here'}
+        )
+    )
+
+    excerpt = forms.CharField(
+        max_length=100,
+        label='Short Title',
+        error_messages={
+            'max_length': "Excerpt can't be longer than 100 characters"
+        },
+        widget=forms.Textarea(
+            attrs={'rows': 2, 'cols': 40,
+                   'placeholder': 'Enter your short title here'}
+        )
+    )
+
+    class Meta:
+        model = Post
+        fields = ['title', 'excerpt', 'content', 'featured_image']
+        labels = {
+            'featured_image': 'Upload image'
+        }
+        widgets = {
+            'content': forms.Textarea(
+                attrs={'rows': 6, 'cols': 40, 'placeholder': "Share your inspiration for this wall! Whether it's a bold geometric pattern or a calming landscape, tell us what motivates your design"}
+            ),
+        }
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        return capfirst(title)
+
+    def clean_featured_image_edit(self):
+        image = self.cleaned_data.get('featured_image', False)
+        if image:
+            # Check if the image is a file upload or a CloudinaryResource object
+            if hasattr(image, 'read'):
+                img = Image.open(image)
+            else:  # Assume it's a CloudinaryResource object
+                response = requests.get(image.url)
+                img = Image.open(io.BytesIO(response.content))
+            max_size = (800, 800)  # Max size (width, height)
+
+            img.thumbnail(max_size, Image.LANCZOS)
+            img_io = io.BytesIO()
+            img_format = img.format if img.format else 'JPEG'
+            img.save(img_io, format=img_format, quality=60)
+            img_io.seek(0)  # Reset file pointer to the beginning
+            image.name = 'resized_' + image.name  # Change the image filename
+
+            # Create a new Django file-like object
+            image = ContentFile(img_io.read(), name=image.name)
+            img_io.close()
+        return image
+
+
 class PostEdit(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'featured_image', 'excerpt']
+    form_class = PostEditForm
     template_name = 'post_edit.html'
     success_url = reverse_lazy('index')
 

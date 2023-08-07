@@ -1,6 +1,8 @@
 from .models import Comment, Post
 from django import forms
 from django.utils.text import slugify
+from PIL import Image
+import io
 
 
 class CommentForm(forms.ModelForm):
@@ -10,13 +12,35 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'image': forms.FileInput(attrs={'class': 'btn, btn-sm'}),
         }
+        labels = {
+            'body': 'Comment',
+            'image': 'Upload image'
+        }
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image', False)
+        if image:
+            img = Image.open(image)
+            max_size = (800, 800)  # Max size (width, height)
+            img.thumbnail(max_size, Image.LANCZOS)
+            img_io = io.BytesIO()
+            img_format = img.format if img.format else 'JPEG'
+            img.save(img_io, format=img_format, quality=60)
+            img_io.seek(0)  # Reset file pointer to the beginning
+            image.name = 'resized_' + image.name  # Change the image filename
+            # Update the image file to the resized image
+            image.file = img_io
+        return image
 
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content',
-                  'featured_image', 'excerpt',]
+        fields = ['title', 'excerpt', 'content',
+                  'featured_image',]
+        labels = {
+            'excerpt': 'Short Title',
+        }
 
     def clean_title(self):
         title = self.cleaned_data.get('title').capitalize()
