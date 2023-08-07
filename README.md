@@ -128,7 +128,9 @@ The site was deployed to GitHub pages. The steps to deploy are as follows:
 4. Once the main branch has been selected, the page will be automatically refreshed with a detailed ribbon display to indicate the successful deployment.
 
 The live link can be found here - https://github.com/lukaszglowacz/norton-innovation-platform
+
 ## Credits
+  - Inspiration of I Think Therefore I Blog CODE Institute template
 
 ### Content
   - Google Fonts - used for fonts
