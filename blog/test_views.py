@@ -1,14 +1,22 @@
+from django.urls import reverse_lazy
+from blog.models import Post
+from PIL import Image as PILImage
 import os
-from .models import Post
 from blog.forms import CommentForm, PostForm
 from django.test import TestCase, Client
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .models import Post, Comment
 from django.contrib.auth.models import User
 from random import randint
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 from io import BytesIO
+from django.utils.text import slugify
+import io
+from django.core.files.images import ImageFile
+from .views import PostEditForm
+from cloudinary.uploader import upload
+from django.core.files.base import ContentFile
 
 
 class PostListViewTest(TestCase):
@@ -251,3 +259,137 @@ class PostCreateFormTest(TestCase):
         new_post = Post.objects.get(title='Test Title')
         # Ensure the image field is not empty
         self.assertTrue(new_post.featured_image)
+
+
+class PostDeleteTest(TestCase):
+
+    def setUp(self):
+        # Create a user and login
+        self.user = User.objects.create_user(
+            username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')
+
+        # Create another user
+        self.other_user = User.objects.create_user(
+            username='otheruser', password='testpass')
+
+        # Create a test post
+        self.post = Post.objects.create(
+            title='Test Post',
+            slug='test-post',
+            author=self.user,
+            content='Content'
+        )
+
+    def test_post_delete_by_author(self):
+        # Delete post by author
+        response = self.client.post(reverse_lazy(
+            'post_delete', args=[self.post.pk]))
+
+        # Assert redirect to index and check post is deleted
+        self.assertRedirects(response, reverse_lazy('index'))
+        self.assertFalse(Post.objects.filter(pk=self.post.pk).exists())
+
+    def test_post_delete_by_other_user(self):
+        # Login as other user
+        self.client.login(username='otheruser', password='testpass')
+
+        # Attempt to delete post by other user
+        response = self.client.post(reverse_lazy(
+            'post_delete', args=[self.post.pk]))
+
+        # Check if the delete was unsuccessful (could be a redirect to a forbidden page, or 403 status, depending on how you handle unauthorized access)
+        self.assertNotEqual(response.status_code, 200)
+
+        # Assert post still exists
+        self.assertTrue(Post.objects.filter(pk=self.post.pk).exists())
+
+
+class PostEditViewTest(TestCase):
+    def setUp(self):
+        # Create an author user
+        self.author_user = User.objects.create_user(
+            username='author', password='testpass')
+
+        # Create another user (not an author of the post)
+        self.other_user = User.objects.create_user(
+            username='otheruser', password='testpass')
+
+        # Create a post authored by the author user
+        self.post = Post.objects.create(
+            title='Test Post',
+            excerpt='Test Excerpt',
+            content='Test Content',
+            author=self.author_user
+        )
+
+    def test_post_edit_by_author(self):
+        self.client.login(username='author', password='testpass')
+        response = self.client.get(reverse_lazy(
+            'post_edit', args=[self.post.pk]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_edit_by_other_user(self):
+        self.client.login(username='otheruser', password='testpass')
+        response = self.client.get(reverse_lazy(
+            'post_edit', args=[self.post.pk]))
+        # Assuming it redirects or forbids access
+        self.assertNotEqual(response.status_code, 200)
+
+
+class PostEditFormTest(TestCase):
+
+    def test_title_max_length(self):
+        form_data = {
+            'title': 'Test Title' * 10,  # make it longer than 50 characters
+            'excerpt': 'Test Excerpt',
+            'content': 'Test Content',
+
+        }
+        form = PostEditForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("Title can't be longer than 50 characters",
+                      form.errors['title'])
+
+    def test_excerpt_max_length(self):
+        form_data = {
+            'title': 'Test Title',
+            'excerpt': 'Test Excerpt' * 20,  # make it longer than 100 characters
+            'content': 'Test Content',
+        }
+        form = PostEditForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("Excerpt can't be longer than 100 characters",
+                      form.errors['excerpt'])
+
+    def test_title_is_capitalized(self):
+        form_data = {
+            'title': 'test title',
+            'excerpt': 'Test Excerpt',
+            'content': 'Test Content',
+        }
+        form = PostEditForm(data=form_data)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['title'], 'Test title')
+
+    def create_image(self, name='test_image.jpg', size=(800, 800), image_format='JPEG'):
+        image_file = BytesIO()
+        image = Image.new('RGB', size)
+        image.save(image_file, image_format)
+        image_file.seek(0)
+        return SimpleUploadedFile(name, image_file.read(), content_type='image/jpeg')
+
+    def test_featured_image_resizing(self):
+        # create a mock image file
+        image_file = self.create_image()
+
+        # create the form with test data
+        form_data = {
+            'title': 'Test Title',
+            'excerpt': 'Test Excerpt',
+            'content': 'Test Content',
+            'featured_image': image_file,
+        }
+        form = PostEditForm(data=form_data)
+
+        self.assertTrue(form.is_valid())
