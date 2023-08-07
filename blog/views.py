@@ -25,7 +25,11 @@ class PostList(generic.ListView):
     paginate_by = 6
 
 
-class PostDetail(View):
+class PostDetail(LoginRequiredMixin, View):
+
+    login_url = '/login/'  # Redirect URL for unauthenticated users
+    # You can use this to redirect back to the post detail page after login
+    redirect_field_name = 'next'
 
     def get(self, request, slug, *args, **kwargs):
         queryset = Post.objects.filter(status=1)
