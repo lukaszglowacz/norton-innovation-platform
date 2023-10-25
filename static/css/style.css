@@ -167,3 +167,33 @@ body {
     background: transparent;
     border: none;
 }
+
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+    background-color: black;
+    /* Changing the color of the control icons */
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+    outline: none;
+    border: none;
+}
+
+.full-height {
+    min-height: 100vh;
+    /* This makes sure your page occupies the whole viewport height */
+    display: flex;
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+}
+
+.carousel-container {
+    width: 100%;
+    max-width: 800px;
+    /* Adjust based on your preference */
+    margin: auto;
+    /* Center the container */
+}

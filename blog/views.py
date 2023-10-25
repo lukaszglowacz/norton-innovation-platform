@@ -1,8 +1,8 @@
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404, reverse, redirect
 from django.views import generic, View
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from .models import Post, Testimonial
-from .forms import CommentForm, PostForm
+from .forms import CommentForm, PostForm, ContactForm
 from django.contrib import messages
 from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView, DeleteView
@@ -15,6 +15,12 @@ from django.core.validators import MaxLengthValidator
 from PIL import Image
 from django.core.files.base import ContentFile
 import io
+import logging
+from django.core.mail import send_mail, BadHeaderError
+from django.template.loader import render_to_string
+import requests
+import os
+from django.conf import settings
 
 
 class PostList(generic.ListView):
@@ -276,10 +282,10 @@ def contact_form(request):
             message = form.cleaned_data['message']
 
             html = render_to_string('contact_email_form.html', {
-                                    'name': name,
-                                    'email': email,
-                                    'message': message,
-                                    })
+                'name': name,
+                'email': email,
+                'message': message,
+            })
 
             send_mail('Message from GUOVACH CONSULTING', 'This is the message',
                       'noreply@guovach.consulting', ['bakatjur@gmail.com'], html_message=html)
@@ -287,3 +293,10 @@ def contact_form(request):
             return redirect('success')
     else:
         form = ContactForm()
+
+    # This return should be outside the 'else' so it covers all cases where a redirect wasn't issued
+    return render(request, 'contact.html', {'form': form})
+
+
+def success_view(request):
+    return render(request, 'success_page.html')

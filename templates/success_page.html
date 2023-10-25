@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% load static %} {% block title %}GUOVACH CONSULTING
+| Success{% endblock%} {% block content %}
+<section>
+    <div class="container-lg">
+        <div class="row">
+            <div class="col-12 mx-auto text-center">
+                <h1 class="mb-5">Mail sent successfully!</h1>
+                <button type="button" class="btn btn-dark m-3 shadow">
+                    <a class="text-decoration-none text-light" href="{% url 'index' %}">Go Back</a>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

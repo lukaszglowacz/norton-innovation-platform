@@ -62,13 +62,13 @@ class ContactForm(forms.Form):
         required=True,
         label='Full Name',
         widget=forms.TextInput(attrs={
-            'placeholder': 'Alex Berg'
+            'placeholder': 'Ann Smith'
         })
     )
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={
-            'placeholder': 'alex.berg@itinnovation.com'
+            'placeholder': 'ann.smith@gmail.com'
         })
     )
     message = forms.CharField(

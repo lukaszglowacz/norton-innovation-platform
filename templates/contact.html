@@ -1,0 +1,56 @@
+{% extends 'base.html' %} {% load static %} {% block title %}GUOVACH CONSULTING
+| Contact{% endblock%} {% block content %}
+
+<style>
+  #id_name {
+    width: 100%;
+  }
+
+  #id_email {
+    width: 100%;
+  }
+
+  #id_message {
+    width: 100%;
+  }
+</style>
+
+<section>
+  <div class="container-lg">
+    <div class="row text-center">
+      <div class="col-lg-8 col-12 mb-5 m-auto">
+        <h1>CONTACT</h1>
+      </div>
+      <div class="row">
+        <div class="col-lg-8 col-12 m-auto">
+          <h3 class="text-center">Contact us now!</h3>
+          <br />
+          <h5 class="text-center">
+            Please write to us if you have any suggestions regarding the
+            operation of this website
+          </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top: 1rem; padding-bottom: 1rem">
+  <div class="container-lg">
+    <div class="row">
+      <div class="col-lg-6 col-12 mb-5 mx-auto p-3">
+        <form method="POST">
+          {% csrf_token %} {{ form.as_p }}
+          <button type="submit" class="btn btn-outline-success my-2 shadow">
+            Submit
+          </button>
+          <button type="reset" class="btn btn-outline-dark my-2 shadow">
+            Reset
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
