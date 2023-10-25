@@ -1,8 +1,8 @@
 from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from io import BytesIO
-from .forms import CommentForm, PostForm
-from django.test import TestCase
+from .forms import CommentForm, PostForm, ContactForm
+from django.test import TestCase, SimpleTestCase
 from .models import Comment, Post
 
 
@@ -78,3 +78,47 @@ class PostFormTest(TestCase):
         # Assert that the slug is unique
         slug = form.cleaned_data['slug']
         self.assertFalse(Post.objects.filter(slug=slug).exists())
+
+
+# Use SimpleTestCase since no database is needed
+class ContactFormTest(SimpleTestCase):
+
+    # Test case to check if the ContactForm is valid with all fields filled
+    def test_contact_form_valid_data(self):
+        form = ContactForm(data={
+            'name': 'Ann Smith',
+            'email': 'ann.smith@gmail.com',
+            'message': 'What can we assist you with?'
+        })
+
+        # The form should be valid
+        self.assertTrue(form.is_valid())
+
+    # Test case to check if the ContactForm is invalid if some fields are missing
+    def test_contact_form_no_data(self):
+        form = ContactForm(data={})
+
+        # The form should not be valid as all fields are required
+        self.assertFalse(form.is_valid())
+
+        # Since there are 3 fields in the form, there should be 3 errors
+        self.assertEquals(len(form.errors), 3)
+
+    # Test individual fields for specific validation requirements
+    # In this case, we are testing the 'email' field to ensure it requires valid email addresses
+    def test_contact_form_email_validation(self):
+        form = ContactForm(data={
+            'name': 'Ann Smith',
+            'email': 'not-an-email',  # Invalid email input
+            'message': 'What can we assist you with?'
+        })
+
+        # The form should not be valid
+        self.assertFalse(form.is_valid())
+
+        # Check that the 'email' field is the cause of the error
+        # Error should be in the 'email' field
+        self.assertIn('email', form.errors.keys())
+        # Default error message for invalid email input
+        self.assertEqual(form.errors['email'][0],
+                         'Enter a valid email address.')

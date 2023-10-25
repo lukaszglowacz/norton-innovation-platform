@@ -37,9 +37,7 @@ EMAIL_PORT = '2525'
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+DEBUG = True
 
 ALLOWED_HOSTS = ['norton-innovation-platform-edc4daea9f06.herokuapp.com',
                  '8000-lukaszglowacz-norton-inn-gdr3hyxkfj.us2.codeanyapp.com', 'localhost']

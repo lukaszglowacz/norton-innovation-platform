@@ -5,7 +5,7 @@ import os
 from blog.forms import CommentForm, PostForm
 from django.test import TestCase, Client
 from django.urls import reverse, reverse_lazy
-from .models import Post, Comment
+from .models import Post, Comment, Testimonial
 from django.contrib.auth.models import User
 from random import randint
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -17,6 +17,8 @@ from django.core.files.images import ImageFile
 from .views import PostEditForm
 from cloudinary.uploader import upload
 from django.core.files.base import ContentFile
+from django.core import mail
+from blog.forms import ContactForm
 
 
 class PostListViewTest(TestCase):
@@ -393,3 +395,37 @@ class PostEditFormTest(TestCase):
         form = PostEditForm(data=form_data)
 
         self.assertTrue(form.is_valid())
+
+
+class ViewTests(TestCase):
+    def setUp(self):
+        # This method will run before the execution of each test case.
+        self.client = Client()
+
+    def test_contact_form_get(self):
+        # Assuming the name of the path is 'contact'
+        response = self.client.get(reverse('contact'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'contact.html')
+        self.assertIsInstance(response.context['form'], ContactForm)
+
+    def test_contact_form_post_success(self):
+        response = self.client.post(reverse('contact'), data={
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'message': 'Hello, this is a test message.'
+        })
+
+        # Check if the mail has been sent successfully.
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject,
+                         'Message from GUOVACH CONSULTING')
+
+        # Assuming 'success' is the name of the path for the success_view.
+        self.assertRedirects(response, reverse('success'))
+
+    def test_success_view(self):
+        # Assuming the name of the path is 'success'
+        response = self.client.get(reverse('success'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'success_page.html')
