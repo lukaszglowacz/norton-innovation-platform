@@ -54,3 +54,26 @@ class PostForm(forms.ModelForm):
         self.cleaned_data['slug'] = unique_slug
 
         return title
+
+
+class ContactForm(forms.Form):
+    name = forms.CharField(
+        max_length=80,
+        required=True,
+        label='Full Name',
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Alex Berg'
+        })
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'alex.berg@itinnovation.com'
+        })
+    )
+    message = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={
+            'placeholder': 'What can we assist you with?'
+        })
+    )

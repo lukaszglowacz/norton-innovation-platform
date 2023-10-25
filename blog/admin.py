@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment
+from .models import Post, Comment, Testimonial
 from django_summernote.admin import SummernoteModelAdmin
 
 
@@ -24,3 +24,9 @@ class CommentAdmin(admin.ModelAdmin):
     def approve_comments(self, request, queryset):
         queryset.update(approved=True)
     approve_comments.short_description = "Mark selected comments as approved"
+
+
+@admin.register(Testimonial)
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = ['name', 'title']
+    search_fields = ['name', 'title']

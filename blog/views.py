@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
 from django.http import HttpResponseRedirect
-from .models import Post
+from .models import Post, Testimonial
 from .forms import CommentForm, PostForm
 from django.contrib import messages
 from django.views.generic import DetailView
@@ -15,7 +15,6 @@ from django.core.validators import MaxLengthValidator
 from PIL import Image
 from django.core.files.base import ContentFile
 import io
-
 
 
 class PostList(generic.ListView):
@@ -32,9 +31,9 @@ class PostDetail(View):
         post = get_object_or_404(queryset, slug=slug)
         comments = post.comments.filter(approved=True).order_by('created_on')
         liked = False
-    
+
         if request.user.is_authenticated and post.likes.filter(id=request.user.id).exists():
-            liked=True
+            liked = True
 
         return render(
             request,
@@ -47,13 +46,14 @@ class PostDetail(View):
                 "comment_form": CommentForm()
             },
         )
+
     def post(self, request, slug, *args, **kwargs):
         queryset = Post.objects.filter(status=1)
         post = get_object_or_404(queryset, slug=slug)
         comments = post.comments.filter(approved=True).order_by('created_on')
         liked = False
         if post.likes.filter(id=self.request.user.id).exists():
-            liked=True
+            liked = True
 
         comment_form = CommentForm(data=request.POST, files=request.FILES)
 
@@ -256,3 +256,34 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         obj = self.get_object()
         return obj.author == self.request.user
+
+
+def base_view(request):
+    return render(request, 'base.html')
+
+
+def testimonials(request):
+    testimonials_list = Testimonial.objects.all()
+    return render(request, 'testimonials.html', {'testimonials': testimonials_list})
+
+
+def contact_form(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+
+            html = render_to_string('contact_email_form.html', {
+                                    'name': name,
+                                    'email': email,
+                                    'message': message,
+                                    })
+
+            send_mail('Message from GUOVACH CONSULTING', 'This is the message',
+                      'noreply@guovach.consulting', ['bakatjur@gmail.com'], html_message=html)
+
+            return redirect('success')
+    else:
+        form = ContactForm()

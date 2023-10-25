@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block content %}
+
+<div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+    <!-- Slides -->
+    <div class="carousel-inner">
+        {% for testimonial in testimonials %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" {% if forloop.first %}data-bs-interval="3000"
+            {% endif %}>
+            <div class="d-flex flex-column align-items-center" <!-- Circular Image -->
+                <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}" class="rounded-circle mb-2"
+                    style="width: 150px; height: 150px; object-fit: cover" />
+                <!-- Name -->
+                <h3 class="mb-1">{{ testimonial.name }}</h3>
+                <!-- Title -->
+                <h5 class="mb-3">{{ testimonial.title }}</h5>
+                <!-- Testimonial Text -->
+                <div class="carousel-caption-custom">
+                    <p class="text-center col-8 mx-auto">
+                        {{ testimonial.testimonial_text }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+
+{% endblock %}

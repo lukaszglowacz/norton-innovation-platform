@@ -45,3 +45,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment {self.body} by {self.name}"
+
+
+class Testimonial(models.Model):
+    name = models.CharField(max_length=50)
+    title = models.CharField(max_length=100)
+    testimonial_text = models.TextField()
+    image = models.ImageField(upload_to='testimonials/')
+
+    def __str__(self):
+        return self.name
