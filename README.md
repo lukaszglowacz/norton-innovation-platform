@@ -17,21 +17,33 @@ An application created for NORTON Innovations's needs deals with printing projec
 ![Screenshot 2023-08-07 115115](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/defff055-255c-4706-bc91-013d44aa2137)
 
 ## Features
-The site assumes the registration and login of users. An unregistered user can view the posts page but cannot add a new post, like, or add comments. To enable this, the user must log in to the application. Then he gets the ability to add, edit and copy his posts and to like and add comments.
+The site assumes the registration and login of users. An unregistered user can view the posts page but cannot add a new post, like, or add comments. To enable this, the user must log in to the application. Then he can add, edit, and copy his posts and to like and add comments.
 
 ### Existing Features
 
  - **Navigation Bar**
     
-    - The user has a marked logo and the option to go to the home page, register and log in. On the right side, there is a key message from NORTON Innovation - Where every wall tells a story. The registered user does not see the registration and login buttons and instead sees the logout and leaving the website button.
+    - The user has a marked logo and the option to go to the home page, testimonials, contact, register, and log in. On the right side is a key message from NORTON Innovation - Where every wall tells a story. The registered user does not see the registration and login buttons and instead sees the logout and leaving the website button.
   
- ![Screenshot 2023-08-07 120209](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/3d142239-d96d-4f7f-99ce-1c69937f6f88)
+ ![navigation_bar](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/493f68a6-eebc-4617-af6e-013df22e2a1b)
 
   - **The Home Page**
 
-    - The user on the main page sees all posts on the site, sorted from the most recent in the upper left corner. It can see the author of the post, photo, title, and subtitle of the post, along with the date of addition or update and the number of likes. There can be a maximum of 6 posts on the page; if there are more, the Add Post button will appear only after the user logs in.
+    - The user on the main page sees all posts on the site, sorted from the most recent in the upper left corner. It can see the post's author, photo, title, and subtitle, along with the date of addition or update and the number of likes. There can be a maximum of 6 posts on the page; if there are more, the Add Post button will appear only after the user logs in.
    
 ![Screenshot 2023-08-07 120133](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/8e428171-e61c-4e25-9940-48afde738232)
+
+- **The Testimonials Page**
+
+    The Testimonials Page shows user reviews of the Norton Inspiration platform. Testimonials Page is programmed in such a way that user reviews scroll automatically, and the user can also scroll manually.
+
+![testimonials](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/2bc37c64-ff67-4ece-95aa-3dc192a1fe64)
+
+- **The Contact Page**
+
+    - The user can also send a contact form to the company with comments regarding the platform's operation. The contact form contains a name field, e-mail address, and message content. The user can reset and send the form by clicking the Submit button. In the checkboxes, the user sees suggestions on what to enter in the form.
+ 
+![contact_form](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/bdc1c522-fba5-4e45-9a54-5b90951deea2)
 
   - **The Sign-Up Page**
 
@@ -41,13 +53,13 @@ The site assumes the registration and login of users. An unregistered user can v
 
   - **The Login Page**
 
-    - The login page consists of username, password, and option to remember me. If the user is not registered, there is a link to the registration page.
+    - The login page consists of a username, password, and option to remember me. If the user is not registered, there is a link to the registration page.
    
 ![Screenshot 2023-08-07 120933](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/89053592-74b2-427a-8a19-dd4061e2421b)
 
   - **The Add Post / Edit Post Page**
 
-    - Add post / Edit post pages consisting of fields: title, subtitle, content, and a button for photo uploading. The maximum number of letters for the title field is 50 and for subtitles, 100. Images are automatically calibrated to smaller sizes to allow the customer to upload images of any size.
+    - Add post / Edit post pages consisting of fields: title, subtitle, content, and a button for photo uploading. The maximum number of letters for the title field is 50, and for subtitles, 100. Images are automatically calibrated to smaller sizes to allow the customer to upload images of any size.
     - 
 ![Screenshot 2023-08-07 121234](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/5433da38-1e99-4521-92c8-56df3aa01aa2)
 
@@ -59,7 +71,7 @@ The site assumes the registration and login of users. An unregistered user can v
 
 - **The Post View Page**
 
-    - The Post View page shows the photo the user uploaded to their post, the title, subtitle, and the date the post was uploaded or edited. Below is the post's content with the possibility of liking and seeing the total number of comments on the post. Below we see comments and the ability to write your comment. The comment requires the approval of the application admin.
+    - The Post View page shows the photo the user uploaded to their post, the title, subtitle, and the date the post was uploaded or edited. Below is the post's content with the possibility of liking and seeing the total number of comments on the post. Below, we see comments and the ability to write your comments. The comment requires the approval of the application admin.
  
 ![Screenshot 2023-08-07 121623](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/199fb24e-4ea8-4e8b-a8ec-15a09a6581dc)
 
@@ -78,7 +90,7 @@ The site assumes the registration and login of users. An unregistered user can v
  
  - Django: A high-level web framework that enables rapid development of web applications. It follows the DRY (Don't Repeat Yourself) principle and is built using Python.
  - Python: A versatile programming language known for its simplicity and readability, widely used in web development, data analysis, artificial intelligence, and more.
- - Bootstrap: A popular front-end framework simplifies web design by providing pre-built responsive components and themes.
+ - Bootstrap: A popular front-end framework that simplifies web design by providing pre-built responsive components and themes.
  - PostgreSQL: An open-source relational database management system known for its performance, reliability, and extensibility and often used in conjunction with web applications to store and manage data.
  - Cloudinary: A cloud-based service that offers solutions for image and video management, including upload, storage, optimization, and delivery across various devices.
  - GitHub: A platform for version control and collaboration platform, allowing multiple people to work on projects simultaneously. They are used to host and edit websites, manage code repositories, and facilitate collaborative coding.
