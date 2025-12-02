@@ -41,10 +41,8 @@ DEBUG = False
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-ALLOWED_HOSTS = [
-    'norton-innovation-platform-89592d9b2194.herokuapp.com',
-    'localhost'
-]
+ALLOWED_HOSTS = ['norton-innovation-platform-89592d9b2194.herokuapp.com',
+                 '8000-lukaszglowacz-norton-inn-gdr3hyxkfj.us2.codeanyapp.com', 'localhost']
 
 
 # Application definition
