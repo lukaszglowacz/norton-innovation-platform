@@ -1,7 +1,16 @@
-# NORTON Inspiration App
+![norton-inspiration-logo-white](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/d8e8e0a6-67ef-465d-b112-8ddf084c74d8)
+
 An application created for NORTON Innovations's needs deals with printing projects using Stable Diffusion technology. The NORTON Inspiration app allows customers to create their picture of the wall and get creative and inspired by interacting with other registered users on the site. The user can add photos of his interior, where he wants to place graphics created for the client's needs by the company. Users inspire the post's author by commenting and uploading photos that are supposed to inspire the client to a project that becomes his dream.
 
-![norton-inspiration-logo-white](https://github.com/lukaszglowacz/norton-innovation-platform/assets/119242394/d8e8e0a6-67ef-465d-b112-8ddf084c74d8)
+## 🌐 Live View
+
+You can access the live deployed version of the Norton Inspiration App here:
+
+👉 **[Visit the Live App](https://norton-innovation-platform-89592d9b2194.herokuapp.com/)**  
+
+
+
+
 
 ## User Experience (UX)
 
@@ -126,20 +135,144 @@ Appearance, functionality, and responsiveness were consistent for various device
 
 There are no known unfixed bugs on this site.
 
-## Deployment
+## Deployment (Heroku)
+Below is the complete process of deploying the application on Heroku — from forking the repository, to configuring mail, database, Cloudinary, and creating a superuser to add testimonials.
 
-The site was deployed to Heroku.
+### Fork & Clone
+1. Go to GitHub and click Fork to create your own copy of the repository.
+2. (Optional) Clone the project locally or work in VSCode.
 
-The live link can be found here - https://norton-innovation-platform-edc4daea9f06.herokuapp.com/
+### Required Files for Heroku
+Make sure your project includes the following:
+- requirements.txt
+- Procfile
+- .python-version (e.g., 3.11)
+- Correctly configured settings.py:
+  - DEBUG = False
+  - SECRET_KEY pulled from environment variables
+  - DATABASES configured via dj_database_url
+  - Cloudinary configured for static and media storage
+  - ALLOWED_HOSTS containing your Heroku app domain
 
-The site was deployed to GitHub pages. The steps to deploy are as follows:
+Example Procfile:
 
-1. In the GitHub repository, navigate to the Settings tab.
-2. Once in Settings, navigate to the Pages tab on the left-hand side.
-3. Under Source, select the branch to master, then click Save.
-4. Once the main branch has been selected, the page will be automatically refreshed with a detailed ribbon display to indicate the successful deployment.
+```bash
+web: gunicorn inspiration.wsgi
+```
 
-The live link can be found here - https://github.com/lukaszglowacz/norton-innovation-platform
+### Create the Heroku App
+1. Log in to https://dashboard.heroku.com
+2. Click New → Create new app
+3. Provide a name and choose the region (EU recommended)
+4. Go to Deploy → select GitHub
+5. Connect your repository
+6. (Optional) Enable Automatic Deploys
+
+### Add Heroku Postgres
+1. Go to the Resources tab
+2. In the Add-ons search field, type Heroku Postgres
+3. Choose the free plan
+4. After provisioning, Heroku will automatically add DATABASE_URL to Config Vars
+
+### Configure Cloudinary
+1. Log in at https://cloudinary.com
+2. Go to Dashboard
+3. Copy the environment variable:
+
+```bash
+CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+```
+
+4. Add it to Heroku Settings → Config Vars:
+
+```bash
+CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+```
+
+### Configure Mailtrap (SMTP Testing)
+Mailtrap updated its UI — the old “Email Testing” section is now under Sandboxes.
+
+1. Log in to https://mailtrap.io
+2. In the left menu select Sandboxes
+3. Create or open an Inbox
+4. Open the Integration tab and choose SMTP
+5. Copy the SMTP credentials:
+
+- Host: sandbox.smtp.mailtrap.io
+- Port: 2525
+- Username
+- Password
+
+Add them to Heroku Config Vars:
+
+```bash
+EMAIL_HOST=sandbox.smtp.mailtrap.io
+EMAIL_PORT=2525
+EMAIL_HOST_USER=YOUR_MAILTRAP_USERNAME
+EMAIL_HOST_PASSWORD=YOUR_MAILTRAP_PASSWORD
+DEFAULT_FROM_EMAIL=noreply@example.com
+```
+
+### Add Remaining Environment Variables
+In Heroku → Settings → Config Vars, set:
+
+```bash
+SECRET_KEY=your_django_secret_key
+DEBUG=False
+```
+
+### Deploy the App
+1. Go to the Deploy tab
+2. Choose the branch (usually main)
+3. Click Deploy Branch
+4. Heroku builds the app and runs collectstatic
+
+### Run Migrations
+After the deployment completes:
+
+1. Go to More → Run console
+2. Execute:
+
+```bash
+python manage.py migrate
+```
+
+### Create a Superuser (Admin Login)
+
+Using Run console again:
+
+```bash
+python manage.py createsuperuser
+```
+
+Enter:
+- username
+- email
+- password
+
+Then log in at:
+
+```bash
+https://YOUR-HEROKU-APP.herokuapp.com/admin/
+```
+
+### Add Testimonials via Admin
+
+1. Log in to the admin panel
+2. Open the Testimonials model
+3. Click Add
+4. Fill in the name, job title, and testimonial text
+5. Save the entry
+
+### Deployment Complete
+Your application is now successfully deployed with:
+
+- Heroku Postgres
+- Cloudinary (static & media storage)
+- Mailtrap SMTP email testing
+- Admin panel with superuser
+- Testimonials added through Django Admin
+
 
 ## Credits
   - Inspiration of I Think Therefore I Blog CODE Institute template
